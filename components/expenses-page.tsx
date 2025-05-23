@@ -106,8 +106,8 @@ export function ExpensesPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Expenses</h1>
-        <Button onClick={() => router.push("/dashboard/add")} className="gap-1.5">
+        <h1 className="text-3xl font-bold tracking-tight ml-2 md:ml-0">Expenses</h1>
+        <Button onClick={() => router.push("/dashboard/add")} className="gap-1.5 ml-2 md:ml-0">
           <Plus className="h-4 w-4" />
           Add Expense
         </Button>

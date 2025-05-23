@@ -27,20 +27,20 @@ export function ExpenseList({ expenses, showActions = false, onEdit, onDelete }:
         const Icon = getCategoryIcon(expense.category)
 
         return (
-          <div key={expense.id} className="flex items-center justify-between rounded-lg border p-4">
-            <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+          <div key={expense.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 rounded-lg border p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 flex-1">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 mb-2 sm:mb-0">
                 <Icon className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="font-medium">{expense.description}</p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm text-muted-foreground">{formatDate(expense.date)}</p>
                   <Badge variant="outline">{expense.category}</Badge>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-row items-center gap-4">
               <p className="font-medium">{formatCurrency(expense.amount)}</p>
               {showActions && (
                 <div className="flex gap-2">

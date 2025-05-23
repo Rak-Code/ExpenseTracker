@@ -159,8 +159,15 @@ export function Dashboard() {
             <CardTitle>Expense Breakdown</CardTitle>
             <CardDescription>Spending by category for the selected period</CardDescription>
           </CardHeader>
-          <CardContent className="px-2">
-            <ExpenseChart data={getCategoryTotals()} />
+          <CardContent className="px-2 flex flex-col md:flex-row md:items-center md:gap-6">
+            <div className="w-full md:w-1/2">
+              <ExpenseChart data={getCategoryTotals()} />
+            </div>
+            <div className="w-full md:w-1/2 mt-4 md:mt-0">
+              <CardTitle className="text-lg">Expense Breakdown</CardTitle>
+              <CardDescription>Spending by category for the selected period</CardDescription>
+              {/* Add any extra summary or legend here if needed */}
+            </div>
           </CardContent>
         </Card>
 
