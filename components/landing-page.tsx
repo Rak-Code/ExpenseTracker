@@ -1,15 +1,20 @@
 "use client"
 
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { ArrowRight, BarChart3, PieChart, Wallet,IndianRupee  } from "lucide-react"
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog"
+import { LoginForm } from "@/components/login-form"
+import { SignupForm } from "@/components/signup-form"
 import { useAuth } from "@/lib/auth"
-import { ArrowRight, BarChart3, DollarSign, PieChart, Wallet } from "lucide-react"
+
 
 export function LandingPage() {
   const { user } = useAuth()
   const router = useRouter()
+  const [isOpenLogin, setIsOpenLogin] = useState(false)
+  const [isOpenSignup, setIsOpenSignup] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -26,12 +31,22 @@ export function LandingPage() {
             <span className="text-xl font-bold">ExpenseTracker</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
-            <Link href="/signup">
-              <Button>Sign Up</Button>
-            </Link>
+            <Dialog open={isOpenLogin} onOpenChange={setIsOpenLogin}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" onClick={() => setIsOpenLogin(true)}>Login</Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md w-full">
+                <LoginForm />
+              </DialogContent>
+            </Dialog>
+            <Dialog open={isOpenSignup} onOpenChange={setIsOpenSignup}>
+              <DialogTrigger asChild>
+                <Button onClick={() => setIsOpenSignup(true)}>Sign Up</Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md w-full">
+                <SignupForm />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>
@@ -46,16 +61,26 @@ export function LandingPage() {
               your expenses, and make informed financial decisions.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Link href="/signup">
-                <Button size="lg" className="gap-1.5">
-                  Get Started <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button variant="outline" size="lg">
-                  Sign In
-                </Button>
-              </Link>
+              <Dialog open={isOpenSignup} onOpenChange={setIsOpenSignup}>
+                <DialogTrigger asChild>
+                  <Button size="lg" className="gap-1.5">
+                    Get Started <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md w-full">
+                  <SignupForm />
+                </DialogContent>
+              </Dialog>
+              <Dialog open={isOpenLogin} onOpenChange={setIsOpenLogin}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="lg">
+                    Sign In
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md w-full">
+                  <LoginForm />
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </section>
@@ -63,7 +88,7 @@ export function LandingPage() {
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="flex flex-col items-center gap-2 rounded-lg border p-6 text-center shadow-sm">
               <div className="rounded-full bg-primary/10 p-3">
-                <DollarSign className="h-6 w-6 text-primary" />
+                <IndianRupee className="h-6 w-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold">Expense Tracking</h3>
               <p className="text-muted-foreground">
@@ -91,13 +116,6 @@ export function LandingPage() {
           </div>
         </section>
       </main>
-      <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} ExpenseTracker. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }
