@@ -163,11 +163,11 @@ export function Dashboard() {
             <div className="w-full md:w-1/2">
               <ExpenseChart data={getCategoryTotals()} />
             </div>
-            <div className="w-full md:w-1/2 mt-4 md:mt-0">
+            {/* <div className="w-full md:w-1/2 mt-4 md:mt-0">
               <CardTitle className="text-lg">Expense Breakdown</CardTitle>
               <CardDescription>Spending by category for the selected period</CardDescription>
-              {/* Add any extra summary or legend here if needed */}
-            </div>
+              {/* Add any extra summary or legend here if needed *
+            </div> */}
           </CardContent>
         </Card>
 

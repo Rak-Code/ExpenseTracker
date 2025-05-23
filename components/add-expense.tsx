@@ -94,7 +94,7 @@ export function AddExpense() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-3xl font-bold tracking-tight">Add Expense</h1>
+      <h1 className="mb-6 text-3xl ml-12 md:ml-0 font-bold tracking-tight">Add Expense</h1>
 
       <Card>
         <CardHeader>
