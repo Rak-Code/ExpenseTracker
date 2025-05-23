@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { collection, addDoc } from "firebase/firestore"
@@ -21,11 +20,12 @@ export function AddExpense() {
   const router = useRouter()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+
   const [formData, setFormData] = useState({
     amount: "",
     category: "",
     description: "",
-    date: new Date().toISOString().split("T")[0],
+    date: new Date().toLocaleDateString('en-CA'), // 👈 Local date in YYYY-MM-DD format
     notes: "",
   })
 
@@ -67,7 +67,7 @@ export function AddExpense() {
       await addDoc(collection(db, "expenses"), {
         amount,
         category: formData.category,
-        description: "", // Always include description for compatibility
+        description: "", // Still including for future use
         date: new Date(formData.date).toISOString(),
         notes: formData.notes,
         userId: user.uid,
@@ -138,10 +138,16 @@ export function AddExpense() {
               </Select>
             </div>
 
-            
             <div className="grid gap-2">
               <Label htmlFor="date">Date *</Label>
-              <Input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
+              <Input
+                id="date"
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="grid gap-2">
