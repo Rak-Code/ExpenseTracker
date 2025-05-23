@@ -1,6 +1,12 @@
 "use client"
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts"
 import { Card } from "@/components/ui/card"
 import { formatCurrency } from "@/lib/utils"
 
@@ -24,7 +30,7 @@ const COLORS = [
 export function ExpenseChart({ data }: ExpenseChartProps) {
   if (data.length === 0) {
     return (
-      <div className="flex h-[300px] items-center justify-center">
+      <div className="flex items-center justify-center h-64">
         <p className="text-muted-foreground">No expense data available</p>
       </div>
     )
@@ -43,7 +49,7 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
   }
 
   return (
-    <div className="h-[300px] w-full">
+    <div className="w-full aspect-square sm:aspect-[4/3]">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -51,11 +57,11 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
             cx="50%"
             cy="50%"
             labelLine={false}
-            outerRadius={100}
+            outerRadius="80%"
             fill="#8884d8"
             dataKey="value"
             nameKey="name"
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -64,6 +70,20 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
           <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        {data.map((entry, idx) => (
+          <div key={entry.name} className="flex items-center gap-2">
+            <span
+              className="inline-block w-3 h-3 rounded-full"
+              style={{ backgroundColor: COLORS[idx % COLORS.length] }}
+            />
+            <span className="font-medium">{entry.name}</span>
+            <span className="text-blue-500 font-semibold">
+              {((entry.value / data.reduce((sum, d) => sum + d.value, 0)) * 100).toFixed(0)}%
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
