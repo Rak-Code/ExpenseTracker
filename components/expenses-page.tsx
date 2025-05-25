@@ -16,6 +16,7 @@ import { Loader2, Plus, Search } from "lucide-react"
 import { CATEGORIES } from "@/lib/constants"
 
 export function ExpensesPage() {
+  const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
@@ -25,6 +26,36 @@ export function ExpensesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
+
+  // CSV Export Handler
+  const handleExportCSV = () => {
+    if (filteredExpenses.length === 0) {
+      toast({ title: "No expenses", description: "No expenses to export for this month." });
+      return;
+    }
+    // CSV header
+    const header = ["Date", "Description", "Category", "Amount", "Notes"];
+    // CSV rows
+    const rows = filteredExpenses.map(exp => [
+      new Date(exp.date).toLocaleDateString(),
+      exp.description,
+      exp.category,
+      exp.amount,
+      exp.notes ? exp.notes.replace(/\r?\n|\r/g, ' ') : ''
+    ]);
+    const csvContent = [header, ...rows]
+      .map(row => row.map(field => '"' + String(field).replace(/"/g, '""') + '"').join(','))
+      .join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `expenses_${new Date().toISOString().slice(0,7)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -113,29 +144,34 @@ export function ExpensesPage() {
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-1 items-center gap-2">
           <Input
             placeholder="Search expenses..."
-            className="pl-8"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-xs"
           />
+          <Select
+            value={categoryFilter}
+            onValueChange={setCategoryFilter}
+          >
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {CATEGORIES.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="outline" onClick={handleExportCSV} className="ml-2 whitespace-nowrap">
+            Export CSV
+          </Button>
         </div>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="All Categories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {CATEGORIES.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {loading ? (
@@ -143,7 +179,14 @@ export function ExpensesPage() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        <ExpenseList expenses={filteredExpenses} showActions onEdit={handleEdit} onDelete={handleDelete} />
+        <ExpenseList
+          expenses={filteredExpenses}
+          showActions
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          selectedExpenseId={selectedExpenseId}
+          onSelect={setSelectedExpenseId}
+        />
       )}
 
       {editingExpense && (

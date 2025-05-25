@@ -1,5 +1,5 @@
 import React from "react";
-import { Github, Linkedin } from "lucide-react"; // Make sure lucide-react is installed
+import { Github, Linkedin, Briefcase } from "lucide-react"; // Make sure lucide-react is installed
 
 export function AppFooter() {
   return (
@@ -44,6 +44,14 @@ export function AppFooter() {
             className="hover:text-primary"
           >
             <Github className="w-5 h-5" />
+          </a>
+          <a
+            href="https://rakesh-gupta-portfolio-next-js-six.vercel.app/" // Change to your actual portfolio URL
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary"
+          >
+            <Briefcase className="w-5 h-5" />
           </a>
         </div>
       </div>
