@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+
+# Sitemap
+Sitemap: https://expense-tracker-iota-three.vercel.app/sitemap.xml
