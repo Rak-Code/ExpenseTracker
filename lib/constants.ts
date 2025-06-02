@@ -2,7 +2,6 @@ export const CATEGORIES = [
   "Food & Dining",
   "Transportation",
   "Housing",
-  "Utilities",
   "Entertainment",
   "Shopping",
   "Healthcare",
@@ -12,5 +11,8 @@ export const CATEGORIES = [
   "Gifts & Donations",
   "Investments",
   "Income",
+  "Betting",
+  "Subscriptions",
+  "Bills",
   "Other",
 ]
