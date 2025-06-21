@@ -87,7 +87,7 @@ const navItems = [
               const Icon = item.icon
 
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
                   <Button variant={isActive ? "secondary" : "ghost"} className="w-full justify-start">
                     <Icon className="mr-2 h-4 w-4" />
                     {item.label}
