@@ -40,6 +40,17 @@ export function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [chartType, setChartType] = useState<"pie" | "bar">("pie")
+  const [showAddExpense, setShowAddExpense] = useState(false)
+
+  const handleAddExpense = () => {
+    // You can replace this with your actual add expense logic
+    // For now, we'll just show an alert or toggle a modal state
+    setShowAddExpense(true)
+    // If you have a router, you could navigate to add expense page:
+    // router.push("/add-expense")
+    // Or if you have a modal, you could open it here
+    alert("Add Expense functionality - integrate with your add expense component/page")
+  }
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -184,7 +195,7 @@ export function Dashboard() {
                 </div>
               </div>
               
-              <Button size="sm" className="gap-2 shrink-0">
+              <Button size="sm" className="gap-2 shrink-0" onClick={handleAddExpense}>
                 <Plus className="w-4 h-4" />
                 <span className="hidden xs:inline">Add</span>
               </Button>
@@ -357,9 +368,42 @@ export function Dashboard() {
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="h-[250px] sm:h-[300px]">
-                <ExpenseChart data={getCategoryTotals()} type={chartType} />
+              <div className="h-[250px] sm:h-[300px] w-full">
+                {getCategoryTotals().length > 0 ? (
+                  <ExpenseChart data={getCategoryTotals()} type={chartType} />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
+                    <div className="text-center">
+                      <PieChart className="w-12 h-12 mx-auto mb-4" />
+                      <p className="text-sm">No data to display</p>
+                      <p className="text-xs">Add some expenses to see the breakdown</p>
+                    </div>
+                  </div>
+                )}
               </div>
+              
+              {/* Mobile-friendly category list */}
+              {getCategoryTotals().length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <h4 className="text-sm font-medium text-muted-foreground">Categories</h4>
+                  {getCategoryTotals().map((category, index) => {
+                    const percentage = ((category.value / totalExpenses) * 100).toFixed(1)
+                    const colors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-orange-500', 'bg-purple-500', 'bg-pink-500']
+                    return (
+                      <div key={category.name} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${colors[index % colors.length]}`} />
+                          <span className="text-sm font-medium">{category.name}</span>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-semibold">{formatCurrency(category.value)}</div>
+                          <div className="text-xs text-muted-foreground">{percentage}%</div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </CardContent>
           </Card>
 
