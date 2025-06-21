@@ -392,7 +392,7 @@ export function Dashboard() {
                     return (
                       <div key={category.name} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${colors[index % colors.length]}`} />
+                          <div className={`w-3 h-3 rounded-full ₹{colors[index % colors.length]}`} />
                           <span className="text-sm font-medium">{category.name}</span>
                         </div>
                         <div className="text-right">
@@ -417,7 +417,7 @@ export function Dashboard() {
                   </CardTitle>
                   <CardDescription className="text-sm">
                     Your latest transactions
-                    {searchTerm && ` matching "${searchTerm}"`}
+                    {searchTerm && ` matching "₹{searchTerm}"`}
                   </CardDescription>
                 </div>
                 <Button variant="outline" size="sm" className="self-start sm:self-center">
