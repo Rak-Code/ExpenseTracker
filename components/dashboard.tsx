@@ -376,29 +376,6 @@ export function Dashboard() {
                   </div>
                 )}
               </div>
-              
-              {/* Mobile-friendly category list */}
-              {getCategoryTotals().length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <h4 className="text-sm font-medium text-muted-foreground">Categories</h4>
-                  {getCategoryTotals().map((category, index) => {
-                    const percentage = ((category.value / totalExpenses) * 100).toFixed(1)
-                    const colors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-orange-500', 'bg-purple-500', 'bg-pink-500']
-                    return (
-                      <div key={category.name} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ₹{colors[index % colors.length]}`} />
-                          <span className="text-sm font-medium">{category.name}</span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-semibold">{formatCurrency(category.value)}</div>
-                          <div className="text-xs text-muted-foreground">{percentage}%</div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
             </CardContent>
           </Card>
 
