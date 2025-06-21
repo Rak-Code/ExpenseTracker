@@ -31,6 +31,7 @@ import {
   Menu
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { AddExpense } from "@/components/add-expense"
 
 export function Dashboard() {
   const { user } = useAuth()
@@ -43,13 +44,7 @@ export function Dashboard() {
   const [showAddExpense, setShowAddExpense] = useState(false)
 
   const handleAddExpense = () => {
-    // You can replace this with your actual add expense logic
-    // For now, we'll just show an alert or toggle a modal state
     setShowAddExpense(true)
-    // If you have a router, you could navigate to add expense page:
-    // router.push("/add-expense")
-    // Or if you have a modal, you could open it here
-    alert("Add Expense functionality - integrate with your add expense component/page")
   }
 
   useEffect(() => {
@@ -494,6 +489,26 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Add Expense Modal */}
+        {showAddExpense && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="bg-background rounded-lg shadow-lg p-4 w-full max-w-md relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2"
+                onClick={() => setShowAddExpense(false)}
+                aria-label="Close"
+              >
+                <span className="sr-only">Close</span>
+                ×
+              </Button>
+              <h2 className="text-lg font-bold mb-4">Add Expense</h2>
+              <AddExpense onSuccess={() => setShowAddExpense(false)} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

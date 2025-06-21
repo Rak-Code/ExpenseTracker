@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { CATEGORIES } from "@/lib/constants"
 
-export function AddExpense() {
+export function AddExpense({ onSuccess }: { onSuccess?: () => void }) {
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
@@ -78,8 +78,8 @@ export function AddExpense() {
         title: "Expense Added",
         description: "Your expense has been successfully added.",
       })
-
-      router.push("/dashboard/expenses")
+      if (onSuccess) onSuccess();
+      else router.push("/dashboard/expenses")
     } catch (error) {
       console.error("Error adding expense:", error)
       toast({
