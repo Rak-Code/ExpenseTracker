@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { ExpensesPage } from "@/components/expenses-page"
-import { DashboardLayout } from "@/components/dashboard-layout"
 
 export const metadata: Metadata = {
   title: 'Expense History - Track Your Spending',
@@ -14,8 +13,6 @@ export const metadata: Metadata = {
 
 export default function Expenses() {
   return (
-    <DashboardLayout>
-      <ExpensesPage />
-    </DashboardLayout>
+    <ExpensesPage />
   )
 }

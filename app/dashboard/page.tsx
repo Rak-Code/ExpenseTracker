@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { Dashboard } from "@/components/dashboard"
-import { DashboardLayout } from "@/components/dashboard-layout"
 
 export const metadata: Metadata = {
   title: 'Dashboard - Your Financial Overview',
@@ -14,8 +13,6 @@ export const metadata: Metadata = {
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout>
-      <Dashboard />
-    </DashboardLayout>
+    <Dashboard />
   )
 }
