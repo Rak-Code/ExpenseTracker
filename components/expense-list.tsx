@@ -27,13 +27,10 @@ export function ExpenseList({ expenses, showActions = false, onEdit, onDelete, s
     <div className="space-y-4">
       {expenses.map((expense) => {
         const Icon = getCategoryIcon(expense.category)
-
         const isSelected = selectedExpenseId === expense.id;
-
         return (
-          <>
+          <div key={expense.id + (isSelected ? '-selected' : '')}>
             <div
-              key={expense.id}
               className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 rounded-lg border p-4 ${isSelected ? 'bg-muted/50 border-primary' : ''}`}
               style={{ cursor: onSelect ? 'pointer' : undefined }}
               onClick={() => onSelect?.(expense.id)}
@@ -69,7 +66,7 @@ export function ExpenseList({ expenses, showActions = false, onEdit, onDelete, s
                 <strong>Notes:</strong> {expense.notes}
               </div>
             )}
-          </>
+          </div>
         )
       })}
     </div>

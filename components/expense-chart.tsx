@@ -14,11 +14,12 @@ import {
   Legend,
 } from "recharts"
 import { Card } from "@/components/ui/card"
-import { formatCurrency } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
 
 interface ExpenseChartProps {
   data: { name: string; value: number }[]
   type?: "pie" | "bar"
+  hideLegend?: boolean
 }
 
 const COLORS = [
@@ -36,7 +37,7 @@ const COLORS = [
   "#82E0AA",
 ]
 
-export function ExpenseChart({ data, type = "pie" }: ExpenseChartProps) {
+export function ExpenseChart({ data, type = "pie", hideLegend = false }: ExpenseChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex items-center justify-center h-[300px]">
@@ -103,10 +104,21 @@ export function ExpenseChart({ data, type = "pie" }: ExpenseChartProps) {
   }
 
   return (
-    <div className="w-full h-[300px]">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
+    <div className="w-full">
+      {/* Mobile: Stack vertically, Desktop: Side by side */}
+      <div className={cn(
+        "flex gap-4",
+        hideLegend || type === "bar" 
+          ? "flex-col" 
+          : "flex-col lg:grid lg:grid-cols-3"
+      )}>
         {/* Pie Chart */}
-        <div className="lg:col-span-2 h-full">
+        <div className={cn(
+          "w-full",
+          hideLegend || type === "bar" 
+            ? "h-[250px]" 
+            : "lg:col-span-2 h-[200px] sm:h-[250px] lg:h-[280px]"
+        )}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -114,7 +126,7 @@ export function ExpenseChart({ data, type = "pie" }: ExpenseChartProps) {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius="85%"
+                outerRadius={hideLegend ? "75%" : "80%"}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
@@ -128,29 +140,31 @@ export function ExpenseChart({ data, type = "pie" }: ExpenseChartProps) {
           </ResponsiveContainer>
         </div>
 
-        {/* Legend */}
-        <div className="lg:col-span-1 h-full overflow-y-auto">
-          <div className="space-y-3 p-2">
-            <h4 className="font-medium text-sm text-muted-foreground mb-3">Categories</h4>
-            {data.map((entry, idx) => (
-              <div key={entry.name} className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: COLORS[idx % COLORS.length] }}
-                  />
-                  <span className="font-medium text-sm truncate">{entry.name}</span>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="font-semibold text-sm">{formatCurrency(entry.value)}</div>
-                  <div className="text-xs font-medium" style={{ color: COLORS[idx % COLORS.length] }}>
-                    {((entry.value / total) * 100).toFixed(1)}%
+        {/* Legend - Hidden on mobile when hideLegend is true */}
+        {!hideLegend && type === "pie" && (
+          <div className="lg:col-span-1 max-h-[200px] lg:max-h-[280px] overflow-y-auto">
+            <div className="space-y-2 p-2">
+              <h4 className="font-medium text-sm text-muted-foreground mb-2">Categories</h4>
+              {data.map((entry, idx) => (
+                <div key={entry.name} className="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span
+                      className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: COLORS[idx % COLORS.length] }}
+                    />
+                    <span className="font-medium text-xs truncate">{entry.name}</span>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <div className="font-semibold text-xs">{formatCurrency(entry.value)}</div>
+                    <div className="text-xs font-medium opacity-75" style={{ color: COLORS[idx % COLORS.length] }}>
+                      {((entry.value / total) * 100).toFixed(1)}%
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

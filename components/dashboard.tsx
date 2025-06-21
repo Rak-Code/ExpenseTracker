@@ -363,9 +363,9 @@ export function Dashboard() {
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="h-[250px] sm:h-[300px] w-full">
+              <div className="h-[250px] xs:h-[280px] sm:h-[320px] w-full flex items-center justify-center">
                 {getCategoryTotals().length > 0 ? (
-                  <ExpenseChart data={getCategoryTotals()} type={chartType} />
+                  <ExpenseChart data={getCategoryTotals()} type={chartType} hideLegend />
                 ) : (
                   <div className="flex items-center justify-center h-full text-muted-foreground">
                     <div className="text-center">
