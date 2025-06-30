@@ -12,7 +12,7 @@ import { ExpenseList } from "@/components/expense-list"
 import { EditExpenseDialog } from "@/components/edit-expense-dialog"
 import { useToast } from "@/hooks/use-toast"
 import type { Expense } from "@/types"
-import { Loader2, Plus, Search } from "lucide-react"
+import { Loader2, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react"
 import { CATEGORIES } from "@/lib/constants"
 
 export function ExpensesPage() {
@@ -26,6 +26,22 @@ export function ExpensesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  
+  // Calculate pagination values
+  const totalItems = filteredExpenses.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentExpenses = filteredExpenses.slice(startIndex, endIndex)
+  
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, categoryFilter])
 
   // CSV Export Handler
   const handleExportCSV = () => {
@@ -134,6 +150,19 @@ export function ExpensesPage() {
     setEditingExpense(null)
   }
 
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1))
+  }
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+  }
+
+  const handlePageSizeChange = (newSize: string) => {
+    setItemsPerPage(Number(newSize))
+    setCurrentPage(1)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -179,14 +208,91 @@ export function ExpensesPage() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        <ExpenseList
-          expenses={filteredExpenses}
-          showActions
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          selectedExpenseId={selectedExpenseId}
-          onSelect={setSelectedExpenseId}
-        />
+        <>
+          <ExpenseList
+            expenses={currentExpenses}
+            showActions
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            selectedExpenseId={selectedExpenseId}
+            onSelect={setSelectedExpenseId}
+          />
+
+          {/* Pagination Controls */}
+          {totalItems > 0 && (
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>
+                  Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of {totalItems} expenses
+                </span>
+                <Select value={itemsPerPage.toString()} onValueChange={handlePageSizeChange}>
+                  <SelectTrigger className="w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span>per page</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="gap-1"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNumber: number;
+                    
+                    if (totalPages <= 5) {
+                      pageNumber = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNumber = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNumber = totalPages - 4 + i;
+                    } else {
+                      pageNumber = currentPage - 2 + i;
+                    }
+
+                    return (
+                      <Button
+                        key={pageNumber}
+                        variant={currentPage === pageNumber ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(pageNumber)}
+                        className="w-8 h-8 p-0"
+                      >
+                        {pageNumber}
+                      </Button>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="gap-1"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {editingExpense && (
