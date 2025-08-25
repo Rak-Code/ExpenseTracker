@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { BarChart3, Home, LogOut, Plus, Wallet } from "lucide-react"
+import { PieChart } from "lucide-react"
 
 import { useState } from "react"
 
@@ -33,9 +34,9 @@ export function Sidebar() {
   }
 
   const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: Home },
-    { href: "/dashboard/expenses", label: "Expenses", icon: BarChart3 },
-    { href: "/dashboard/add", label: "Add Expense", icon: Plus },
+  { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/dashboard/expenses", label: "Expenses", icon: BarChart3 },
+  { href: "/dashboard/add", label: "Add Expense", icon: Plus },
   ]
 
   const [open, setOpen] = useState(false)

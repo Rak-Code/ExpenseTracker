@@ -792,5 +792,6 @@ export function ExpensesPage() {
         />
       )}
     </div>
+    
   )
 }

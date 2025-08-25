@@ -189,25 +189,53 @@ export function Dashboard() {
     return Array.from(categoryMap.entries()).map(([name, value]) => ({ name, value }))
   }
 
-  // Enhanced insights calculations
+  // Enhanced insights calculations (now filters by timeframe, like expenses-page)
   const getEnhancedInsights = () => {
-    if (expenses.length === 0) return null
+    if (expenses.length === 0) return null;
 
-    const categoryTotals = getCategoryTotals()
-    const topCategory = categoryTotals.reduce((max, curr) => 
-      curr.value > max.value ? curr : max, 
-      { name: "", value: 0 }
-    )
+    // Filter expenses by timeframe
+    let filtered = [...expenses];
+    const now = new Date();
+    if (timeframe === "day") {
+      const today = now.toISOString().slice(0, 10);
+      filtered = filtered.filter(e => e.date.slice(0, 10) === today);
+    } else if (timeframe === "week") {
+      const weekAgo = new Date(now);
+      weekAgo.setDate(now.getDate() - 6);
+      filtered = filtered.filter(e => new Date(e.date) >= weekAgo);
+    } else if (timeframe === "month") {
+      const monthAgo = new Date(now);
+      monthAgo.setMonth(now.getMonth() - 1);
+      filtered = filtered.filter(e => new Date(e.date) >= monthAgo);
+    } else if (timeframe === "year") {
+      const yearAgo = new Date(now);
+      yearAgo.setFullYear(now.getFullYear() - 1);
+      filtered = filtered.filter(e => new Date(e.date) >= yearAgo);
+    }
 
-    const biggestExpense = expenses.reduce((max, expense) => 
-      expense.amount > max.amount ? expense : max
-    )
+    // Calculate total spent per category
+    const categoryTotals = filtered.reduce((acc, expense) => {
+      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Find top category by total amount
+    const topCategory = Object.entries(categoryTotals).reduce(
+      (max, [category, amount]) => amount > max.amount ? { category, amount } : max,
+      { category: "", amount: 0 }
+    );
+
+    // Find biggest single expense
+    const biggestExpense = filtered.reduce((max, expense) =>
+      expense.amount > max.amount ? expense : max,
+      { amount: 0 } as Expense
+    );
 
     return {
       topCategory,
       biggestExpense,
-      totalCategories: categoryTotals.length
-    }
+      totalCategories: Object.keys(categoryTotals).length
+    };
   }
 
   if (loading) {
@@ -388,7 +416,7 @@ export function Dashboard() {
               </div>
             </div>
 
-            {/* Enhanced Top Spending Category */}
+            {/* Enhanced Top Spending Category (corrected) */}
             {insights && (
               <div className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-r from-green-50/50 to-green-100/30 hover:from-green-100/60 hover:to-green-200/40 transition-colors">
                 <div className="w-1 h-12 bg-gradient-to-b from-green-500 to-green-700 rounded-full" />
@@ -396,8 +424,10 @@ export function Dashboard() {
                 <div className="flex-1">
                   <div className="font-semibold">Top Spending Category</div>
                   <div className="text-sm text-muted-foreground">
-                    {insights.topCategory.name} • {formatCurrency(insights.topCategory.value)} 
-                    ({((insights.topCategory.value / totalExpenses) * 100).toFixed(1)}%)
+                    {insights.topCategory.category || "None"} • {formatCurrency(insights.topCategory.amount || 0)}
+                    {totalExpenses > 0 && insights.topCategory.amount > 0 && (
+                      <> ({((insights.topCategory.amount / totalExpenses) * 100).toFixed(1)}%)</>
+                    )}
                   </div>
                 </div>
               </div>
