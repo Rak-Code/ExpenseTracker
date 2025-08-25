@@ -14,5 +14,9 @@ export const CATEGORIES = [
   "Betting",
   "Subscriptions",
   "Bills",
+  "Rent",
+  "TiffinVendor",
+  "Gym",
+  "FamilyPayment",
   "Other",
 ]
